@@ -1,5 +1,94 @@
 'use strict';
 
+class Input
+{
+	constructor()
+	{
+		this.element = document.getElementById('input');
+		this.faderDelay = 150;
+		this.faderStep = .1;
+		this.faderId = null;
+		this.fading = 0;
+		this.opacity = 1.0;
+	}
+
+	fader()
+	{
+		if (this.opacity <= 0) return;
+		this.opacity = this.opacity - this.faderStep;
+		if (this.opacity < 0) this.opacity = 0;
+
+		let color = 'rgba(0,0,0,' + this.opacity + ')';
+
+		if (this.fading & 0b001) this.first.style.color = color;
+		if (this.fading & 0b010) this.second.style.color = color;
+		if (this.fading & 0b100) this.third.style.color = color;
+
+		this.faderId = setTimeout(this.fader.bind(this), this.faderDelay);
+	}
+
+	get first()
+	{
+		return this.element.children[0];
+	}
+
+	get second()
+	{
+		return this.element.children[1];
+	}
+
+	get third()
+	{
+		return this.element.children[2];
+	}
+
+	set first(dir)
+	{
+		this.first.textContent = dir;
+		if (dir.length && this.fading & 0b001)
+		{
+			this.first.style.color = 'rgb(0,0,0)';
+			this.fading &= 0b110;
+		}
+	}
+
+	set second(dir)
+	{
+		this.second.textContent = dir;
+		if (dir.length && this.fading & 0b010)
+		{
+			this.second.style.color = 'rgb(0,0,0)';
+			this.fading &= 0b101;
+		}
+	}
+
+	set third(dir)
+	{
+		this.third.textContent = dir;
+		if (dir.length && this.fading & 0b100)
+		{
+			this.third.style.color = 'rgb(0,0,0)';
+			this.fading &= 0b011;
+		}
+	}
+
+	update()
+	{
+		// console.log(dirs.join(' '));
+		if (dirs.length >= 1) this.first = dirs[0];
+		if (dirs.length >= 2) this.second = dirs[1];
+		if (dirs.length >= 3) this.third = dirs[2];
+	}
+
+	fade()
+	{
+		if (this.faderId) clearTimeout(this.faderId);
+		this.fading = 7;
+		this.opacity = 1.0;
+		this.faderId = setTimeout(this.fader.bind(this), this.faderDelay);
+	}
+}
+
 class Hideable
 {
 	constructor(element)
@@ -199,12 +288,6 @@ function checkAnswer()
 	return question == area.text;
 }
 
-function writeDirsToDiv(selector)
-{
-	let div = document.querySelector(selector);
-	div.textContent = dirs.join(' ');
-}
-
 function onKeyDown(key)
 {
 	if (key == 'x')
@@ -225,10 +308,12 @@ function onKeyDown(key)
 		else
 			dirs = [dir];
 
-		writeDirsToDiv('#input');
+		input.update();
 
 		if (checkAnswer())
 		{
+			input.fade();
+
 			let [file, rank] = getRandomSquare();
 			setQuestion(file, rank);
 		}
@@ -250,6 +335,7 @@ buttons[2].onclick = function() { onKeyDown('a') };
 buttons[3].onclick = function() { onKeyDown('s') };
 
 let dirs = [];
+let input = new Input();
 let board = new Board(document.getElementById('board'));
 let [file, rank] = getRandomSquare();
 setQuestion(file, rank);
