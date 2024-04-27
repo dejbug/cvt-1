@@ -14,7 +14,11 @@ class Input
 
 	fader()
 	{
-		if (this.opacity <= 0) return;
+		if (this.opacity <= 0)
+		{
+			// this.highlight('', '');
+			return;
+		}
 		this.opacity = this.opacity - this.faderStep;
 		if (this.opacity < 0) this.opacity = 0;
 
@@ -45,31 +49,28 @@ class Input
 	set first(dir)
 	{
 		this.first.textContent = dir;
-		if (dir.length && this.fading & 0b001)
-		{
-			this.first.style.color = 'rgb(0,0,0)';
-			this.fading &= 0b110;
-		}
+		this.first.style.color = 'black';
+		this.first.style.backgroundColor = '';
+		this.first.style.borderColor = '';
+		this.fading &= 0b110;
 	}
 
 	set second(dir)
 	{
 		this.second.textContent = dir;
-		if (dir.length && this.fading & 0b010)
-		{
-			this.second.style.color = 'rgb(0,0,0)';
-			this.fading &= 0b101;
-		}
+		this.second.style.color = 'black';
+		this.second.style.backgroundColor = '';
+		this.second.style.borderColor = '';
+		this.fading &= 0b101;
 	}
 
 	set third(dir)
 	{
 		this.third.textContent = dir;
-		if (dir.length && this.fading & 0b100)
-		{
-			this.third.style.color = 'rgb(0,0,0)';
-			this.fading &= 0b011;
-		}
+		this.third.style.color = 'black';
+		this.third.style.backgroundColor = '';
+		this.third.style.borderColor = '';
+		this.fading &= 0b011;
 	}
 
 	update()
@@ -83,9 +84,25 @@ class Input
 	fade()
 	{
 		if (this.faderId) clearTimeout(this.faderId);
-		this.fading = 7;
+		this.fading = 0b111;
 		this.opacity = 1.0;
 		this.faderId = setTimeout(this.fader.bind(this), this.faderDelay);
+	}
+
+	highlight(bg, bc)
+	{
+		if (bg != null) {
+			this.first.style.backgroundColor = bg;
+			this.second.style.backgroundColor = bg;
+			this.third.style.backgroundColor = bg;
+		}
+
+		if (bc != null)
+		{
+			this.first.style.borderColor = bc;
+			this.second.style.borderColor= bc;
+			this.third.style.borderColor= bc;
+		}
 	}
 }
 
@@ -312,10 +329,15 @@ function onKeyDown(key)
 
 		if (checkAnswer())
 		{
+			input.highlight(null, 'lime');
 			input.fade();
 
 			let [file, rank] = getRandomSquare();
 			setQuestion(file, rank);
+		}
+		else if (dirs.length >= 3)
+		{
+			input.highlight('crimson', '');
 		}
 
 		updateBoards();
