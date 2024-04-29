@@ -238,13 +238,14 @@ class Hideable
 {
 	toggle()
 	{
-		this.show(!this.showing);
+		return this.show(!this.showing);
 	}
 
 	show(on = true)
 	{
 		if (!this.element) return false;
 		this.element.style.visibility = on ? 'initial' : 'hidden';
+		return on;
 	}
 
 	get showing()
@@ -359,6 +360,10 @@ function setStatus(text)
 	}
 }
 
+function updateBoardToggler(color = 'lime')
+{
+	buttons[4].style.backgroundColor = board.showing ? color : '';
+}
 
 
 document.onkeydown = function(e)
@@ -394,6 +399,7 @@ function onKeyDown(key)
 	if (key == 'x')
 	{
 		board.toggle();
+		updateBoardToggler();
 		return;
 	}
 
@@ -419,4 +425,5 @@ function onKeyDown(key)
 			function() { onKeyDown(candidates.type) },
 			2000);
 	}
+	updateBoardToggler();
 }

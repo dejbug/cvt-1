@@ -356,12 +356,14 @@ buttons[1].onclick = function() { onKeyDown('w') };
 buttons[2].onclick = function() { onKeyDown('a') };
 buttons[3].onclick = function() { onKeyDown('s') };
 
+let toggler = document.querySelector('#auxiliary > .board-toggler');
+toggler.onclick = function() { onKeyDown('x') };
+
 let dirs = [];
 let input = new Input();
 let board = new Board(document.getElementById('board'));
 let [file, rank] = getRandomSquare();
 setQuestion(file, rank);
-
 
 
 class Button
@@ -435,6 +437,7 @@ function toggleBoards()
 		ne.hideBoard();
 		sw.hideBoard();
 		se.hideBoard();
+		toggler.style.backgroundColor = '';
 	}
 	else
 	{
@@ -442,6 +445,7 @@ function toggleBoards()
 		ne.showBoard();
 		sw.showBoard();
 		se.showBoard();
+		toggler.style.backgroundColor = 'lime';
 	}
 }
 

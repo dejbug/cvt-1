@@ -66,6 +66,21 @@ body {
 	margin: auto;
 }
 
+#auxiliary {
+	display: flex;
+	justify-content: end;
+}
+
+.board-toggler {
+	margin-top: .5rem;
+	width: 2rem;
+	aspect-ratio: 1;
+	background-image: url(vendor/google/icons/grid_view_FILL0_wght400_GRAD0_opsz24.svg);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
 .arrow {
 	width: 100%;
 	height: 100%;
@@ -102,7 +117,7 @@ body {
 		/* grid-template-rows: auto 1fr; */
 		grid-template-columns: 10rem auto;
 		/* grid-template-rows: 5rem 2rem 3fr; */
-		grid-template-rows: 5rem auto 3fr;
+		grid-template-rows: 5rem auto 3fr auto;
 
 		/* align-content: baseline; */
 		/* justify-content: stretch; */
@@ -128,7 +143,7 @@ body {
 
 	#controls {
 		grid-column: 2;
-		grid-row: 1 / 4;
+		grid-row: 1 / 5;
 
 		max-width: 80svmin;
 		max-height: 80svmin;
@@ -137,5 +152,14 @@ body {
 		margin-left: 3em;
 
 		gap: 1vmin;
+	}
+
+	#auxiliary {
+		grid-column: 1;
+		grid-row: 4;
+	}
+
+	#auxiliary .board-toggler {
+		margin: 0;
 	}
 }
