@@ -70,23 +70,23 @@ body {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
-	filter: contrast(.7);
+	/*filter: contrast(.7);*/
 }
 
 .nw .arrow {
-	background-image: url(vendor/google-icons/north_west_FILL0_wght400_GRAD0_opsz24.svg);
+	background-image: url(vendor/google/icons/north_west_FILL0_wght400_GRAD0_opsz24.svg);
 }
 
 .ne .arrow {
-	background-image: url(vendor/google-icons/north_east_FILL0_wght400_GRAD0_opsz24.svg);
+	background-image: url(vendor/google/icons/north_east_FILL0_wght400_GRAD0_opsz24.svg);
 }
 
 .sw .arrow {
-	background-image: url(vendor/google-icons/south_west_FILL0_wght400_GRAD0_opsz24.svg);
+	background-image: url(vendor/google/icons/south_west_FILL0_wght400_GRAD0_opsz24.svg);
 }
 
 .se .arrow {
-	background-image: url(vendor/google-icons/south_east_FILL0_wght400_GRAD0_opsz24.svg);
+	background-image: url(vendor/google/icons/south_east_FILL0_wght400_GRAD0_opsz24.svg);
 }
 
 @media all and (min-width: 480px) {

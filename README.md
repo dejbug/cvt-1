@@ -1,3 +1,4 @@
-# Chess Visualization Trainer #1
+# Chess Visualization Trainer
 
-Try it [live](https://dejbug.github.io/cvt-1/).
+Try [Trainer #1](https://dejbug.github.io/cvt-1/).
+Try [Trainer #2](https://dejbug.github.io/cvt-1/rbnu.html).

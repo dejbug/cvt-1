@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Chess Visualization Trainer #1 by dejbug">
+    <title>Chess Visualization Trainer #1</title>
+	<link rel="stylesheet" href="rbnu.css">
+</head>
+<body>
+<div id="trainer">
+	<div id="question">
+		<div id="source">
+			<div class="arrow nw"></div>
+			<div class="arrow ne"></div>
+			<div class="arrow ne"></div>
+		</div>
+		<div id="target">
+			<div class="arrow sw"></div>
+			<div class="arrow se"></div>
+			<div class="arrow sw"></div>
+		</div>
+	</div>
+	<div id="score"></div>
+	<div id="controls">
+		<button class="rook"></button>
+		<button class="bishop"></button>
+		<button class="knight"></button>
+		<button class="unreachable">skip</button>
+		<button class="board-toggler"></button>
+	</div>
+	<div id="status"></div>
+	<div id="board"></div>
+</div>
+<script defer src="rbnu.js"></script>
+</body>
+</html>
