@@ -149,6 +149,41 @@ class Board extends Hideable
 			else
 				square.style.backgroundColor = s.light ? 'var(--light-square-color)' : 'var(--dark-square-color)';
 		}
+
+		if (color)
+		{
+			let [ hh, vv ] = area.cross;
+			this.drawBorder(hh, 'borderTop', 'thin solid lime');
+			this.drawBorder(vv, 'borderRight', 'thin solid lime');
+
+			let [ ll, rr, tt, bb ] = area.box;
+			this.drawBorder(ll, 'borderLeft', 'thin solid lime');
+			this.drawBorder(rr, 'borderRight', 'thin solid lime');
+			this.drawBorder(tt, 'borderTop', 'thin solid lime');
+			this.drawBorder(bb, 'borderBottom', 'thin solid lime');
+		}
+		else
+			this.clearBorders();
+	}
+
+	drawBorder(ss, key, value)
+	{
+		for (let s of ss)
+		{
+			let el = this.element.querySelector('.' + s.text);
+			el.style[key] = value;
+		}
+	}
+
+	clearBorders()
+	{
+		for (let file = 1; file <= 8; ++file)
+			for (let rank = 1; rank <= 8; ++rank)
+			{
+				let s = new Square(file, rank);
+				let el  = this.element.querySelector('.' + s.text);
+				el.style.border = '';
+			}
 	}
 
 	clear()
@@ -189,14 +224,26 @@ class Square
 	{
 		return ' abcdefgh'[file] + rank;
 	}
+
+	move(dfile, drank)
+	{
+		let file = this.file + dfile;
+		let rank = this.rank + drank;
+		if (file < 1 || file > 8) return null;
+		if (rank < 1 || rank > 8) return null;
+		return new Square(file, rank);
+	}
 }
 
 class Area
 {
 	constructor(f1 = 1, r1 = 1, f2 = 8, r2 = 8)
 	{
+		if (f1 > f2) [ f1, f2 ] = [ f2, f1 ];
+		if (r1 > r2) [ r1, r2 ] = [ r2, r1 ];
 		this.src = new Square(f1, r1);
 		this.dst = new Square(f2, r2);
+		this.history = [];
 	}
 
 	get width()
@@ -212,24 +259,28 @@ class Area
 	north()
 	{
 		this.src.rank = this.src.rank + Math.floor((this.height + 1) / 2);
+		this.history.push('n');
 		return this;
 	}
 
 	south()
 	{
 		this.dst.rank = this.src.rank - 1 + Math.floor((this.height + 1) / 2);
+		this.history.push('s');
 		return this;
 	}
 
 	east()
 	{
 		this.src.file = this.src.file + Math.floor((this.width + 1) / 2);
+		this.history.push('e');
 		return this;
 	}
 
 	west()
 	{
 		this.dst.file = this.src.file - 1 + Math.floor((this.width + 1) / 2);
+		this.history.push('w');
 		return this;
 	}
 
@@ -254,9 +305,135 @@ class Area
 		return ss;
 	}
 
+	get width()
+	{
+		return this.dst.file - this.src.file + 1;
+	}
+
+	get height()
+	{
+		return this.dst.rank - this.src.rank + 1;
+	}
+
 	get text()
 	{
 		return this.squares.map((s) => Square.fr2s(s.file, s.rank)).join(' ');
+	}
+
+	static File(file)
+	{
+		let ss = [];
+		for (let rank = 1; rank <= 8; ++rank)
+			ss.push(new Square(file, rank));
+		return ss;
+	}
+
+	static Rank(rank)
+	{
+		let ss = [];
+		for (let file = 1; file <= 8; ++file)
+			ss.push(new Square(file, rank));
+		return ss;
+	}
+
+	isnormal()
+	{
+		// True if this Area was cut by nw, ne, se, sw. That is,
+		//	if the history contains matched pairs of one vertical
+		//	and one horizontal cut.
+		if (this.history.length <= 0) return true;
+		if (this.history.length % 2) return false;
+		for (let i = 0; i < this.history.length; i += 2)
+		{
+			let a = this.history[i];
+			let b = this.history[i + 1];
+			if ((a == 'n' || a == 's') && (b == 'w' || b == 'e')) continue;
+			if ((a == 'w' || a == 'e') && (b == 'n' || b == 's')) continue;
+			return false;
+		}
+		return true;
+	}
+
+	get mid()
+	{
+		console.assert(this.isnormal);
+
+		//console.log(this.width, this.src.file, this.src.rank);
+
+		if (this.width == 4)
+			return new Square(4, 4);
+		else if (this.width == 2)
+		{
+			if (this.src.file <= 4 && this.src.rank >= 5)
+				return new Square(2, 6);
+			if (this.src.file >= 5 && this.src.rank >= 5)
+				return new Square(6, 6);
+			if (this.src.file <= 4 && this.src.rank <= 4)
+				return new Square(2, 2);
+			if (this.src.file >= 5 && this.src.rank <= 4)
+				return new Square(6, 2);
+		}
+		else if (this.width == 1)
+		{
+			let file, rank;
+			if (this.src.file <= 2) file = 1;
+			else if (this.src.file <= 4) file = 3;
+			else if (this.src.file <= 6) file = 5;
+			else file = 7;
+			if (this.src.rank <= 2) rank = 1;
+			else if (this.src.rank <= 4) rank = 3;
+			else if (this.src.rank <= 6) rank = 5;
+			else rank = 7;
+			return new Square(file, rank);
+		}
+		return null;
+	}
+
+	get cross()
+	{
+		let mid = this.mid;
+		if (!mid) return [ [], [] ];
+
+		let hh = [ mid ], vv = [ mid ];
+		let len = this.width;
+
+		for (let i = 1; i < len; ++i)
+		{
+			hh.push(mid.move(-i, 0));
+			vv.push(mid.move(0, -i));
+		}
+		for (let i = 1; i <= len; ++i)
+		{
+			hh.push(mid.move(i, 0));
+			vv.push(mid.move(0, i));
+		}
+		return [ hh, vv ];
+	}
+
+	get box()
+	{
+		let mid = this.mid;
+		let len = this.width;
+
+		let f1 = mid.file - len + 1
+		let f2 = mid.file + len;
+		let r1 = mid.rank - len + 1;
+		let r2 = mid.rank + len;
+
+		let ll = [], rr = [], tt = [], bb = [];
+
+		for (let r = r1; r <= r2; ++r)
+		{
+			ll.push(new Square(f1, r));
+			rr.push(new Square(f2, r));
+		}
+		for (let f = f1; f <= f2; ++f)
+		{
+			bb.push(new Square(f, r1));
+			tt.push(new Square(f, r2));
+		}
+
+		return [ ll, rr, tt, bb ];
 	}
 }
 
@@ -417,7 +594,7 @@ class Button
 		let dd = dirs.length < 3 ? dirs.slice() : [ ];
 		dd.push(this.dir)
 
-		console.log(dd);
+		// console.log(dd);
 		area.cut(dd);
 
 		board.highlight(area, 'lime');
