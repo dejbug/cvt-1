@@ -10,6 +10,7 @@
 }
 
 body {
+	background-color: #333;
 	font-family: sans;
 }
 
@@ -46,6 +47,7 @@ body {
 	background-color: salmon;
 	padding: .3em;
 	text-align: center;
+	font-weight: bold;
 }
 
 #score {
