@@ -1,0 +1,196 @@
+:root {
+	--light-square-color: #777;
+	--dark-square-color: #555;
+}
+
+*, *::before, *::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background-color: #333;
+	font-family: sans;
+}
+
+.icon {
+	min-height: 2rem;
+	min-width: 2rem;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.icon.nw {
+	background-image: url(vendor/google/icons/north_west_FILL0_wght400_GRAD0_opsz24.svg);
+}
+
+.icon.ne {
+	background-image: url(vendor/google/icons/north_east_FILL0_wght400_GRAD0_opsz24.svg);
+}
+
+.icon.sw {
+	background-image: url(vendor/google/icons/south_west_FILL0_wght400_GRAD0_opsz24.svg);
+}
+
+.icon.se {
+	background-image: url(vendor/google/icons/south_east_FILL0_wght400_GRAD0_opsz24.svg);
+}
+
+.board-toggler {
+	background-image: url(vendor/google/icons/grid_view_FILL0_wght400_GRAD0_opsz24.svg);
+}
+
+.dark.king {
+	background-image: url(vendor/wikipedia/Chess_kdt45.svg);
+}
+
+.king {
+	background-image: url(vendor/wikipedia/Chess_klt45.svg);
+}
+
+.queen {
+	background-image: url(vendor/wikipedia/Chess_qlt45.svg);
+}
+
+.rook {
+	background-image: url(vendor/wikipedia/Chess_rlt45.svg);
+}
+
+.bishop {
+	background-image: url(vendor/wikipedia/Chess_blt45.svg);
+}
+
+.knight {
+	background-image: url(vendor/wikipedia/Chess_nlt45.svg);
+}
+
+.pawn {
+	background-image: url(vendor/wikipedia/Chess_plt45.svg);
+}
+
+.king.dark {
+	background-image: url(vendor/wikipedia/Chess_kdt45.svg);
+}
+
+.queen.dark {
+	background-image: url(vendor/wikipedia/Chess_qdt45.svg);
+}
+
+.rook.dark {
+	background-image: url(vendor/wikipedia/Chess_rdt45.svg);
+}
+
+.bishop.dark {
+	background-image: url(vendor/wikipedia/Chess_bdt45.svg);
+}
+
+.knight.dark {
+	background-image: url(vendor/wikipedia/Chess_ndt45.svg);
+}
+
+.pawn.dark {
+	background-image: url(vendor/wikipedia/Chess_pdt45.svg);
+}
+
+.board {
+	display: grid;
+	grid-template-columns: repeat(8, 1fr);
+	grid-template-rows: repeat(8, 1fr);
+
+	aspect-ratio: 1;
+	background-color: #555;
+}
+
+.board > div {
+	/* border: thin solid #222; */
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#trainer {
+	margin: 2vmin auto;
+	display: grid;
+	grid-template-columns: 1fr;
+	/* grid-template-rows: repeat(3, 1fr); */
+	grid-template-rows: 1fr;
+	align-items: center;
+	max-width: 90vmin;
+	max-height: 90vmin;
+	gap: 1vmin;
+}
+
+#board {
+	grid-column: 1;
+	grid-row: 1;
+}
+
+#controls {
+	display: grid;
+	grid-template-areas:
+		'ii ii ii ii'
+		'bt bt nw ne'
+		'bt bt sw se';
+	grid-template-columns: repeat(4, 1fr);
+	gap: 1vmin;
+
+	grid-column: 1;
+	grid-row: 1;
+	justify-self: center;
+}
+
+#controls > * {
+	aspect-ratio: 1;
+	width: 10vmin;
+}
+
+#controls > .icon.nw {
+	grid-area: nw;
+}
+
+#controls > .icon.ne {
+	grid-area: ne;
+}
+
+#controls > .icon.sw {
+	grid-area: sw;
+}
+
+#controls > .icon.se {
+	grid-area: se;
+}
+
+#controls > .icon.board-toggler {
+	grid-area: bt;
+	height: 100%;
+	width: 100%;
+}
+
+#controls > button {
+}
+
+#input {
+	grid-area: ii;
+
+	width: 100%;
+	height: 3rem;
+	background-color: navajowhite;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#input div {
+	width: 2em;
+	height: 2em;
+	border: thin solid grey;
+	margin: 0 .3em;
+	background-color: snow;
+	padding: .3em;
+	text-align: center;
+	font-weight: bold;
+}
