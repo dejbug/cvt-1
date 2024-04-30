@@ -177,7 +177,8 @@ class Square
 
 	equals(that)
 	{
-		return Square.compare(this, that) == 0;
+		// return Square.compare(this, that) == 0;
+		return this.file == that.file && this.rank == that.rank;
 	}
 }
 
@@ -296,7 +297,7 @@ class Problem
 		this.pieces = [];
 		this.knight = null;
 		this.targets = [];
-		this.reset();
+		//this.reset();
 	}
 
 	reset()
@@ -304,9 +305,15 @@ class Problem
 		this.pieces = makeRandomPosition('Nqrbnpppppppp');
 		this.knight = this.pieces.find(p => p.chr === 'N');
 		this.targets = knight(this.knight.square);
-		this.correct();
+		this.makesuretargetexists();
+		// console.log('targets', this.targets);
 		this.reachable = Piece.piecesonsquares(this.pieces, this.targets);
-		//console.log('reachable', this.reachable);
+		// console.log('reachable', this.reachable);
+
+		const blah = [];
+		for (const r of this.reachable)
+			blah.push(this.pieces[r]);
+		console.log('reachable', blah);
 	}
 
 	takes(s)
@@ -317,7 +324,7 @@ class Problem
 
 	findtarget(s)
 	{
-		for (const i in this.targets)
+		for (let i = 1; i < this.targets.length; ++i)
 			if (this.targets[i].equals(s))
 				return i;
 		return -1;
@@ -325,10 +332,14 @@ class Problem
 
 	get highestvaluedtarget()
 	{
+		if (!this.reachable.length) return 0;
 		let best = 0;
-		for (let i = 1; i < this.targets.length; ++i)
-			if (this.targets[best].value < this.targets[i].value)
+		for (let i = 1; i < this.reachable.length; ++i)
+		{
+			const r = this.reachable[best];
+			if (this.pieces[r].value < this.pieces[i].value)
 				best = i;
+		}
 		return best;
 	}
 
@@ -351,7 +362,7 @@ class Problem
 		return this.targets[i];
 	}
 
-	correct()
+	makesuretargetexists()
 	{
 		console.assert(this.knight);
 		if (!this.firsttarget)
@@ -364,25 +375,27 @@ class Problem
 		}
 	}
 
-	check(dirs)
+	checkanswer(dirs)
 	{
 		const area = new Area();
 		area.cut(dirs);
 		console.assert(area.squares.length == 1);
-		const a = area.squares[0];
-		// console.log(dirs, a.text);
+		const s = area.squares[0];
+		console.log('answer', s.text, dirs.reduce((a, b) => a + b.dir, ''));
 
-		const ti = this.findtarget(a);
+		const ti = this.findtarget(s);
 		console.log(ti, this.reachable);
 
 		if (ti >= 0)
 		{
 			const hi = this.highestvaluedtarget;
+			console.log('highestvaluedtarget', hi, this.pieces[hi]);
 			const t = this.targets[ti];
-			console.log(a.text, t.text);
-			return a.equals(t);
+			console.log(ti, t.text);
+			return [ s.equals(t), ti == hi ];
 		}
 
+		return [ false, false ];
 	}
 }
 
@@ -528,11 +541,6 @@ class Dir
 	}
 }
 
-document.onkeydown = function(e)
-{
-	onKeyDown(e.key);
-}
-
 class Shower
 {
 	constructor(delay)
@@ -672,6 +680,11 @@ class Input
 	}
 }
 
+document.onkeydown = function(e)
+{
+	onKeyDown(e.key);
+}
+
 function onKeyDown(key)
 {
 	// console.log(key);
@@ -690,9 +703,10 @@ function onKeyDown(key)
 		input.update();
 		if (dirs.length >= 3)
 		{
-			if (problem.check(dirs))
+			const [ correct, highest ] = problem.checkanswer(dirs);
+			if (correct)
 			{
-				console.log('correct!');
+				console.log(highest ? 'CORRECT!' : 'correct!');
 			}
 
 			dirs = [];
