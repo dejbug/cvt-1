@@ -20,6 +20,7 @@ body {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
+	user-action: none;
 }
 
 .icon.nw {
@@ -145,6 +146,8 @@ body {
 #controls > * {
 	aspect-ratio: 1;
 	width: 10vmin;
+	cursor: pointer;
+	user-select: none;
 }
 
 #controls > .icon.nw {
